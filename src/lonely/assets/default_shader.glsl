@@ -31,11 +31,19 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 	vec3 cp = vec3(sin(cr), cos(cr),0.0);
 	vec3 cu = normalize( cross(cw,cp) );
 	vec3 cv = normalize( cross(cu,cw) );
-    return mat3( cu, cv, cw );
+  return mat3( cu, cv, cw );
 }
 
 vec4 effect(vec4 color, sampler2D texture, vec2 tex_coords, vec2 scr_coords)
 {
   vec4 col = vec4(1.0, 0.0, 0.0, 1.0);
-  return col;
+  vec2 fragCoord = vec2(scr_coords.x, love_ScreenSize.y - scr_coords.y);
+  vec2 p = (-love_ScreenSize.xy + 2.0*fragCoord)/love_ScreenSize.y;
+
+  vec3 ro = camera.position;
+  vec3 ta = camera.position + camera.direction;
+  mat3 ca = setCamera(ro, ta, camera.roll);
+  vec3 rd = ca * normalize(vec3(p, 2.0));
+
+  return vec4(p, 0.0, 1.0);
 }
